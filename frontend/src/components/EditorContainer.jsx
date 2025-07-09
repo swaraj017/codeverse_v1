@@ -103,7 +103,7 @@ const EditorContainer = ({
           <div className="flex items-start gap-6 overflow-x-auto scrollbar-thin scrollbar-thumb-slate-700 scrollbar-track-transparent">
             <LanguageSelectorCard
               language={language}
-              setLanguage={handleLanguageChange}
+              handleLanguageChange={handleLanguageChange}
             />
             <UserListCard users={users} userName={userName} />
             <RoomIdCard roomId={roomId} copyRoomId={copyRoomId} />
