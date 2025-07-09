@@ -1,0 +1,17 @@
+@import url('https://fonts.googleapis.com/css2?family=Urbanist:ital,wght@0,100..900;1,100..900&display=swap');
+@import "tailwindcss";
+
+body {
+  margin: 0;
+  padding: 0; 
+  @apply bg-gray-950 text-white font-sans;
+
+}
+html, #root {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+   
+  background-color: #000;  
+  font-family: sans-serif;
+}
