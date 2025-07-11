@@ -15,6 +15,8 @@ import FileSidebar from "./FileExplorer/FileSidebar";
 
 const EditorContainer = ({
   roomId,
+  runCode,
+  output,
   code,
   language,
   handleLanguageChange,
@@ -37,7 +39,7 @@ const EditorContainer = ({
       setChatInput("");
     }
   };
-
+  
   const toggleSidebar = () => setSidebarCollapsed(!sidebarCollapsed);
 
   return (
@@ -48,8 +50,8 @@ const EditorContainer = ({
         <div className="flex items-center justify-between h-16 px-2 sm:px-4 md:px-6 border-b border-slate-800/50 bg-slate-800/30">
           {!sidebarCollapsed && (
             <div className="flex items-center space-x-3 transition-all duration-500">
-              <div className="p-2 bg-purple-500/20 rounded-lg border border-purple-500/30">
-                <Code className="text-purple-400 w-5 h-5" />
+              <div className="p-2 bg-purple-500/20 rounded-lg border border-purple-200/30">
+                <Code className="text-purple-200 w-5 h-5" />
               </div>
               <span className="font-bold text-xl bg-gradient-to-r from-purple-400 to-blue-400 bg-clip-text text-transparent">
                 Codeverse
@@ -69,13 +71,12 @@ const EditorContainer = ({
         </div>
 
         <div
-          className={`flex-1 overflow-hidden px-4 py-6 space-y-6 transition-all duration-500 ${
-            sidebarCollapsed
+          className={`flex-1 overflow-hidden px-4 py-6 space-y-6 transition-all duration-500 ${sidebarCollapsed
               ? "opacity-0 scale-95 pointer-events-none"
               : "opacity-100 scale-100"
-          }`}
+            }`}
         >
-          <div className="bg-slate-800/40 rounded-xl border border-slate-700/30 p-4">
+          <div className="bg-slate-800/40 rounded-xl border border-slate-700/30 ">
             <FileSidebar embedMode />
           </div>
 
@@ -90,8 +91,7 @@ const EditorContainer = ({
 
           <button
             onClick={() => setChatOpen(!chatOpen)}
-            className="w-full bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-500 hover:to-blue-500 text-white py-4 rounded-xl flex items-center justify-center gap-3 transition-all duration-300 hover:scale-105 hover:shadow-lg hover:shadow-purple-500/25 border border-purple-500/30 font-medium"
-          >
+            className="w-full bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-500 hover:to-blue-500 text-white py-4 rounded-xl flex items-center justify-center gap-3">
             <MessageCircle size={18} />
             {chatOpen ? "Close Chat" : "Open Chat"}
           </button>
@@ -111,9 +111,9 @@ const EditorContainer = ({
         </div>
 
         <div className="flex-1 relative">
-          <div className="absolute inset-0 bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950">
+          <div className="absolute inset-0 bg-gradient-to-br from-slate-950 via-slate-900 rounded-xl m-1 to-slate-950 ">
             <Editor
-              height="100%"
+              height="60%"
               language={language}
               value={code}
               onChange={handleCodeChange}
@@ -130,6 +130,14 @@ const EditorContainer = ({
                 scrollBeyondLastLine: false,
               }}
             />
+            <button className="run-btn px-4 py-2 bg-green-600 hover:bg-green-700 text-white rounded-lg font-medium transition-all duration-200 shadow-lg hover:shadow-green-500/25 flex items-center gap-2" onClick={runCode}>Execute</button>
+            <textarea
+              className="w-full h-full bg-black text-slate-300 rounded-xl font-mono text-sm p-4 resize-none border-none outline-none placeholder:text-slate-500 overflow-y-scroll scrollbar scrollbar-thin scrollbar-thumb-slate-700 scrollbar-track-slate-800"
+              value={output}
+              readOnly
+              placeholder="Output will appear here after execution..."
+            />
+
           </div>
         </div>
       </div>

@@ -1,9 +1,11 @@
  
-import { useEffect, useState } from "react";
+import { useEffect, useState, version } from "react";
 import "./index.css";
 import io from "socket.io-client";
 import Home from "./components/Pages/Home.jsx";
 import EditorContainer from "./components/EditorContainer.jsx";
+import axios from "axios";
+import { v4 as uuidv4 } from "uuid";
 
 //http://localhost:5000
 
@@ -20,6 +22,8 @@ const App = () => {
   const [typing, setTyping] = useState("");
   const [chatOpen, setChatOpen] = useState(false);
   const [messages, setMessages] = useState([]);
+  const [output,setOutput]=useState("");
+  const [version,setVersion]=useState("*");
 
   useEffect(() => {
     socket.on("userJoined", (users) => {
@@ -29,7 +33,7 @@ const App = () => {
     socket.on("codeUpdate", (newCode) => {
       setCode(newCode);
     });
-
+    
     socket.on("userTyping", (user) => {
       setTyping(`${user.slice(0, 8)}... is typing`);
       setTimeout(() => setTyping(""), 2000);
@@ -39,9 +43,17 @@ const App = () => {
       setLanguage(newLanguage);
     });
 
+     
+
     socket.on("chatMessage", ({ user, message }) => {
       setMessages((prev) => [...prev, { user, message }]);
     });
+    
+    socket.on("codeResponse",(response)=>
+    {
+      setOutput(response.run.output);
+    })
+
 
     return () => {
       socket.off("userJoined");
@@ -49,10 +61,14 @@ const App = () => {
       socket.off("userTyping");
       socket.off("languageUpdate");
       socket.off("chatMessage");
+      socket.off("codeResponse");
     };
   }, []);
 
   useEffect(() => {
+    if (!roomId) {
+    setRoomId(generateRoomId());
+  }
     const handleBeforeUnload = () => {
       socket.emit("leaveRoom");
     };
@@ -61,6 +77,9 @@ const App = () => {
     return () => {
       window.removeEventListener("beforeunload", handleBeforeUnload);
     };
+     
+  
+ 
   }, []);
 
   const joinRoom = () => {
@@ -79,7 +98,13 @@ const App = () => {
     setLanguage("javascript");
     setMessages([]);
   };
-
+  const generateRoomId = () => {
+  return Math.random().toString(36).substring(2, 8).toUpperCase();
+};
+const createRoom = () => {
+  const newRoomId = generateRoomId();
+  setRoomId(newRoomId);
+};
   const copyRoomId = () => {
     navigator.clipboard.writeText(roomId);
     setCopySuccess("Copied!");
@@ -98,11 +123,19 @@ const App = () => {
     socket.emit("languageChange", { roomId, language: newLanguage });
   };
 
+    
+
   const sendMessage = (message) => {
     if (message.trim() !== "") {
       socket.emit("chatMessage", { roomId, user: userName, message });
     }
   };
+
+  const runCode=()=>
+  {
+      socket.emit("compileCode",{code,roomId,language,version});
+
+  }
 
   if (!joined) {
     return (
@@ -131,6 +164,8 @@ const App = () => {
         chatOpen={chatOpen}
         setChatOpen={setChatOpen}
         messages={messages}
+        runCode={runCode}
+        output={output}
         sendMessage={sendMessage}
       />
 

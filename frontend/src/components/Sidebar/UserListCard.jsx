@@ -1,29 +1,41 @@
-import { Users } from "lucide-react";
+import { Users, ChevronDown } from "lucide-react";
 
 const UserListCard = ({ users, userName }) => (
   <div className="bg-slate-800/60 backdrop-blur-sm px-6 py-4 rounded-xl border border-slate-700/50 flex items-center gap-6 min-h-[70px] hover:bg-slate-800/80 transition-all duration-300 shadow-lg">
-    <div className="flex items-center gap-3 text-blue-400 text- m whitespace-nowrap font-medium">
+    
+    {/* Icon + Label */}
+    <div className="flex items-center gap-3 text-blue-400 whitespace-nowrap font-medium">
       <div className="p-2 bg-blue-500/20 rounded-lg border border-blue-500/30">
         <Users size={16} />
       </div>
       <span>Active ({users.length})</span>
     </div>
-    <div className="flex items-center gap-3 flex-wrap text-sm text-slate-300">
-      {users.map((user, idx) => (
-        <div
-          key={idx}
-          className={`flex items-center gap-2 px-4 py-2 rounded-full transition-all duration-200 hover:scale-105 border ${
-            user === userName 
-              ? "bg-emerald-500/20 border-emerald-500/40 text-emerald-300 shadow-lg shadow-emerald-500/20" 
-              : "bg-slate-700/60 border-slate-600/50 text-slate-300 hover:bg-slate-700/80"
-          }`}
-        >
-          <div className={`w-2 h-2 rounded-full ${user === userName ? "bg-emerald-400" : "bg-slate-400"}`}></div>
-          <span className="font-medium">{user}</span>
-        </div>
-      ))}
+
+    {/* Custom Select Dropdown */}
+    <div className="flex-1 relative">
+      <select
+        className="w-full appearance-none bg-slate-900/80 text-slate-200 border border-slate-600 px-4 py-2 pr-10 rounded-lg   transition-all duration-200"
+        defaultValue={userName}
+      >
+        {users.map((user, idx) => (
+          <option
+            key={idx}
+            value={user}
+            className="bg-slate-800 text-slate-300"
+          >
+            {user === userName ? `${user} (You)` : user}
+          </option>
+        ))}
+      </select>
+
+      {/* Custom Arrow */}
+      <ChevronDown
+        size={16}
+        className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none"
+      />
     </div>
   </div>
 );
+
 
 export default UserListCard;
