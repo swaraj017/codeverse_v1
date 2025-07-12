@@ -7,9 +7,9 @@ import EditorContainer from "./components/EditorContainer.jsx";
 import axios from "axios";
 import { v4 as uuidv4 } from "uuid";
 
-//https://codeverse-v1.onrender.com 
+//http://localhost:5000
 
-const socket = io("http://localhost:5000");
+const socket = io("https://codeverse-v1.onrender.com ");
 
 const App = () => {
   const [joined, setJoined] = useState(false);
