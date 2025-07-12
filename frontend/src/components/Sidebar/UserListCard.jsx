@@ -1,7 +1,7 @@
 import { Users, ChevronDown } from "lucide-react";
 
 const UserListCard = ({ users, userName }) => (
-  <div className="bg-slate-800/60 backdrop-blur-sm px-6 py-4 rounded-xl border border-slate-700/50 flex items-center gap-6 min-h-[70px] hover:bg-slate-800/80 transition-all duration-300 shadow-lg">
+  <div className="bg-slate-800/60 backdrop-blur-sm px-6 py-4 rounded-xl border border-slate-700/50 flex items-center gap-6 h-[70px] w-80 hover:bg-slate-800/80 transition-all duration-300 shadow-lg">
     
     {/* Icon + Label */}
     <div className="flex items-center gap-3 text-blue-400 whitespace-nowrap font-medium">

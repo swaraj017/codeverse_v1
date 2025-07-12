@@ -29,6 +29,8 @@ const EditorContainer = ({
   setChatOpen,
   messages,
   sendMessage,
+  userInput,
+  setUserInput,
 }) => {
   const [chatInput, setChatInput] = useState("");
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
@@ -39,13 +41,15 @@ const EditorContainer = ({
       setChatInput("");
     }
   };
-  
+
   const toggleSidebar = () => setSidebarCollapsed(!sidebarCollapsed);
 
   return (
     <div className="flex h-screen relative transition-all duration-300 overflow-hidden bg-gradient-to-br from-slate-950 via-purple-950/20 to-slate-950">
       <div
-        className={`${sidebarCollapsed ? "w-16" : "w-80"} bg-slate-900/95 backdrop-blur-xl text-white transition-all duration-500 ease-in-out border-r border-slate-800/50 flex flex-col shadow-2xl`}
+        className={`${
+          sidebarCollapsed ? "w-16" : "w-80"
+        } bg-slate-900/95 backdrop-blur-xl text-white transition-all duration-500 ease-in-out border-r border-slate-800/50 flex flex-col shadow-2xl`}
       >
         <div className="flex items-center justify-between h-16 px-2 sm:px-4 md:px-6 border-b border-slate-800/50 bg-slate-800/30">
           {!sidebarCollapsed && (
@@ -71,12 +75,13 @@ const EditorContainer = ({
         </div>
 
         <div
-          className={`flex-1 overflow-hidden px-4 py-6 space-y-6 transition-all duration-500 ${sidebarCollapsed
+          className={`flex-1 overflow-hidden px-4 py-6 space-y-6 transition-all duration-500 ${
+            sidebarCollapsed
               ? "opacity-0 scale-95 pointer-events-none"
               : "opacity-100 scale-100"
-            }`}
+          }`}
         >
-          <div className="bg-slate-800/40 rounded-xl border border-slate-700/30 ">
+          <div className="bg-slate-800/40 rounded-xl border border-slate-700/30">
             <FileSidebar embedMode />
           </div>
 
@@ -91,7 +96,8 @@ const EditorContainer = ({
 
           <button
             onClick={() => setChatOpen(!chatOpen)}
-            className="w-full bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-500 hover:to-blue-500 text-white py-4 rounded-xl flex items-center justify-center gap-3">
+            className="w-full bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-500 hover:to-blue-500 text-white py-4 rounded-xl flex items-center justify-center gap-3"
+          >
             <MessageCircle size={18} />
             {chatOpen ? "Close Chat" : "Open Chat"}
           </button>
@@ -110,10 +116,10 @@ const EditorContainer = ({
           </div>
         </div>
 
-        <div className="flex-1 relative">
-          <div className="absolute inset-0 bg-gradient-to-br from-slate-950 via-slate-900 rounded-xl m-1 to-slate-950 ">
+        <div className="flex-1 relative overflow-y-auto p-2 space-y-3">
+          <div className="rounded-xl p-1">
             <Editor
-              height="60%"
+              height="60vh"
               language={language}
               value={code}
               onChange={handleCodeChange}
@@ -130,14 +136,39 @@ const EditorContainer = ({
                 scrollBeyondLastLine: false,
               }}
             />
-            <button className="run-btn px-4 py-2 bg-green-600 hover:bg-green-700 text-white rounded-lg font-medium transition-all duration-200 shadow-lg hover:shadow-green-500/25 flex items-center gap-2" onClick={runCode}>Execute</button>
+          </div>
+
+          <div>
+            <label className="block text-m font-medium text-slate-400 mb-1">
+              Input (stdin)
+            </label>
             <textarea
-              className="w-full h-full bg-black text-slate-300 rounded-xl font-mono text-sm p-4 resize-none border-none outline-none placeholder:text-slate-500 overflow-y-scroll scrollbar scrollbar-thin scrollbar-thumb-slate-700 scrollbar-track-slate-800"
-              value={output}
+              className="w-full h-24 bg-slate-900 text-slate-200 font-mono text-sm p-3 rounded-lg border border-slate-700   placeholder:text-slate-500"
+              value={userInput}
+              onChange={(e) => setUserInput(e.target.value)}
+              placeholder="Enter inputs here line by line..."
+            />
+          </div>
+
+          <div>
+            <button
+              onClick={runCode}
+              className="px-3 py-3 bg-green-600   text-white rounded-lg font-semibold transition-all duration-200 shadow-md  "
+            >
+              Execute Code
+            </button>
+          </div>
+
+          <div>
+            <label className="block text-m font-medium text-slate-400 mb-1">
+              Output
+            </label>
+            <textarea
+              className="w-full h-48 bg-black   font-mono text-sm p-4 rounded-lg border border-slate-700 resize-none overflow-y-scroll outline-none"
+              value={`CodeVerse:// ${output}`}
               readOnly
               placeholder="Output will appear here after execution..."
             />
-
           </div>
         </div>
       </div>

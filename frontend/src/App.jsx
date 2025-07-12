@@ -1,4 +1,4 @@
- 
+
 import { useEffect, useState, version } from "react";
 import "./index.css";
 import io from "socket.io-client";
@@ -7,9 +7,9 @@ import EditorContainer from "./components/EditorContainer.jsx";
 import axios from "axios";
 import { v4 as uuidv4 } from "uuid";
 
-//http://localhost:5000
+//https://codeverse-v1.onrender.com 
 
-const socket = io("https://codeverse-v1.onrender.com");  
+const socket = io("http://localhost:5000");
 
 const App = () => {
   const [joined, setJoined] = useState(false);
@@ -21,9 +21,11 @@ const App = () => {
   const [users, setUsers] = useState([]);
   const [typing, setTyping] = useState("");
   const [chatOpen, setChatOpen] = useState(false);
+  const [userInput, setUserInput] = useState("");
+
   const [messages, setMessages] = useState([]);
-  const [output,setOutput]=useState("");
-  const [version,setVersion]=useState("*");
+  const [output, setOutput] = useState("");
+  const [version, setVersion] = useState("*");
 
   useEffect(() => {
     socket.on("userJoined", (users) => {
@@ -33,7 +35,7 @@ const App = () => {
     socket.on("codeUpdate", (newCode) => {
       setCode(newCode);
     });
-    
+
     socket.on("userTyping", (user) => {
       setTyping(`${user.slice(0, 8)}... is typing`);
       setTimeout(() => setTyping(""), 2000);
@@ -43,14 +45,13 @@ const App = () => {
       setLanguage(newLanguage);
     });
 
-     
+
 
     socket.on("chatMessage", ({ user, message }) => {
       setMessages((prev) => [...prev, { user, message }]);
     });
-    
-    socket.on("codeResponse",(response)=>
-    {
+
+    socket.on("codeResponse", (response) => {
       setOutput(response.run.output);
     })
 
@@ -67,8 +68,8 @@ const App = () => {
 
   useEffect(() => {
     if (!roomId) {
-    setRoomId(generateRoomId());
-  }
+      setRoomId(generateRoomId());
+    }
     const handleBeforeUnload = () => {
       socket.emit("leaveRoom");
     };
@@ -77,9 +78,9 @@ const App = () => {
     return () => {
       window.removeEventListener("beforeunload", handleBeforeUnload);
     };
-     
-  
- 
+
+
+
   }, []);
 
   const joinRoom = () => {
@@ -99,12 +100,14 @@ const App = () => {
     setMessages([]);
   };
   const generateRoomId = () => {
-  return Math.random().toString(36).substring(2, 8).toUpperCase();
-};
-const createRoom = () => {
-  const newRoomId = generateRoomId();
-  setRoomId(newRoomId);
-};
+    return Math.random().toString(36).substring(2, 8).toUpperCase();
+  };
+  const createRoom = () => {
+    const newRoomId = generateRoomId();
+    setRoomId(newRoomId);
+  };
+
+
   const copyRoomId = () => {
     navigator.clipboard.writeText(roomId);
     setCopySuccess("Copied!");
@@ -123,7 +126,7 @@ const createRoom = () => {
     socket.emit("languageChange", { roomId, language: newLanguage });
   };
 
-    
+
 
   const sendMessage = (message) => {
     if (message.trim() !== "") {
@@ -131,9 +134,9 @@ const createRoom = () => {
     }
   };
 
-  const runCode=()=>
-  {
-      socket.emit("compileCode",{code,roomId,language,version});
+  const runCode = () => {
+    socket.emit("compileCode", { code, roomId, language, version,
+       input: userInput, });
 
   }
 
@@ -166,6 +169,8 @@ const createRoom = () => {
         messages={messages}
         runCode={runCode}
         output={output}
+        userInput={userInput}
+        setUserInput={setUserInput}
         sendMessage={sendMessage}
       />
 
