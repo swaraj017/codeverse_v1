@@ -1,6 +1,6 @@
 # 💻 Codeverse – Live Pair Programming Platform
 
-🎯 **Live Demo**: [https://codeverse.onrender.com](https://codeverse.onrender.com)
+🎯 **Live Demo**: [codeverse_v1](https://codeverse-v1.onrender.com/)
 
 ## 🧠 Overview
 
