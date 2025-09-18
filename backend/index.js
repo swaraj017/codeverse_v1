@@ -52,78 +52,100 @@ io.on("connection", (socket) => {
     socket.join(roomId);
 
     if (!rooms.has(roomId)) {
-      rooms.set(roomId,{
-        users:new Set(),code:"//start code here.."
+      rooms.set(roomId, {
+        users: new Set(), code: "//start code here.."
       });
     }
 
     rooms.get(roomId).users.add(userName);
-    socket.emit("codeUpdate",rooms.get(roomId).code );
+    socket.emit("codeUpdate", rooms.get(roomId).code);
 
     io.to(roomId).emit("userJoined", Array.from(rooms.get(currentRoom).users));
   });
 
-  
+
 
   socket.on("codeChange", ({ roomId, code }) => {
-    if(rooms.has(roomId))
-    {
-      rooms.get(roomId).code=code;
+    if (rooms.has(roomId)) {
+      rooms.get(roomId).code = code;
     }
     socket.to(roomId).emit("codeUpdate", code);
   });
-   
 
   socket.on("leaveRoom", () => {
+    if (currentRoom && currentUser) {
+      const room = rooms.get(currentRoom);
+      if (room) {
+        room.users.delete(currentUser);
+
+        // Notify others about user leaving
+        io.to(currentRoom).emit("userJoined", Array.from(room.users));
+
+        // If no users left, delete the room
+        if (room.users.size === 0) {
+          rooms.delete(currentRoom);
+          console.log(`Room ${currentRoom} deleted (no users left)`);
+        }
+      }
+    }
     socket.disconnect();
   });
 
   socket.on("typing", ({ roomId, userName }) => {
     socket.to(roomId).emit("userTyping", userName);
   });
-  
+
   socket.on("languageChange", ({ roomId, language }) => {
     io.to(roomId).emit("languageUpdate", language);
   });
-  
-  socket.on("compileCode", async ({ code, roomId, language, version,input }) => {
-  if (rooms.has(roomId)) 
-    {  
-    const room = rooms.get(roomId);
-    try {
-      const response = await axios.post("https://emkc.org/api/v2/piston/execute", {
-        language,
-        version,
-        files: [
-          {
-            content: code,
+
+  socket.on("compileCode", async ({ code, roomId, language, version, input }) => {
+    if (rooms.has(roomId)) {
+      const room = rooms.get(roomId);
+      try {
+        const response = await axios.post("https://emkc.org/api/v2/piston/execute", {
+          language,
+          version,
+          files: [
+            {
+              content: code,
+            },
+          ],
+          stdin: input,
+        });
+
+        room.output = response.data.run.output;
+        io.to(roomId).emit("codeResponse", response.data);
+      } catch (err) {
+        console.error("Compilation failed:", err.message);
+        io.to(roomId).emit("codeResponse", {
+          run: {
+            output: "Error during compilation.",
           },
-        ],
-          stdin:input,
-      });
+        });
+      }
+    }
+  });
+
+
+  
+socket.on("disconnect", () => {
+  if (currentRoom && currentUser) {
+    const room = rooms.get(currentRoom);
+    if (room) {
+      room.users.delete(currentUser);
+      io.to(currentRoom).emit("userJoined", Array.from(room.users));
+
       
-      room.output = response.data.run.output;
-      io.to(roomId).emit("codeResponse", response.data);
-    } catch (err) {
-      console.error("Compilation failed:", err.message);
-      io.to(roomId).emit("codeResponse", {
-        run: {
-          output: "Error during compilation.",
-        },
-      });
+      if (room.users.size === 0) {
+        rooms.delete(currentRoom);
+        console.log(`Room ${currentRoom} deleted (no users left)`);
+      }
     }
   }
+  console.log("User Disconnected");
 });
 
-
-  socket.on("disconnect", () => {
-    if (currentRoom && currentUser) {
-      rooms.get(currentRoom).users.delete(currentUser);
-      io.to(currentRoom).emit("userJoined", Array.from(rooms.get(currentRoom).users));
-    }
-    console.log("user Disconnected");
-  });
-  
   socket.on("chatMessage", ({ roomId, user, message }) => {
     io.to(roomId).emit("chatMessage", { user, message });
   });
