@@ -1,5 +1,5 @@
 
-import { useEffect, useState, version } from "react";
+import { useEffect, useState } from "react";  
 import "./index.css";
 import io from "socket.io-client";
 import Home from "./components/Pages/Home.jsx";
@@ -7,6 +7,7 @@ import EditorContainer from "./components/EditorContainer.jsx";
 
 import axios from "axios";
 import { v4 as uuidv4 } from "uuid";
+
 
 //http://localhost:5000
 
