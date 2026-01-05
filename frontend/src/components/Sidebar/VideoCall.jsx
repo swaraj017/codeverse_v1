@@ -3,7 +3,7 @@ import PeerService from "../../webrtc/peer";
 import Videocard from "./Videocard";
 import { io } from "socket.io-client";
 
-const socket = io("https://render-hosting-se2b.onrender.com");
+const socket = io("https://codeverse-v1.onrender.com");
 
 const VideoCall = ({ roomId, userName }) => {
   const localVideoRef = useRef(null);
