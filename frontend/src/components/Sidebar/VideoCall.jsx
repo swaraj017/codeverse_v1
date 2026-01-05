@@ -83,7 +83,7 @@ const VideoCall = ({ roomId, userName }) => {
           autoPlay
           muted
           playsInline
-          className="w-40 rounded-lg border"
+          className="w-64 rounded-lg border"
         />
         <video
           ref={remoteVideoRef}
