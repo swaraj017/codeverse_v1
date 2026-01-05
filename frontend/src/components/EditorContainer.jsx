@@ -1,5 +1,7 @@
 import React, { useState } from "react";
 import Editor from "@monaco-editor/react";
+import Videocard from "./Sidebar/Videocard";
+import VideoCall from "./Sidebar/VideoCall";
 import {
   MessageCircle,
   Code,
@@ -101,7 +103,13 @@ const EditorContainer = ({
             <MessageCircle size={18} />
             {chatOpen ? "Close Chat" : "Open Chat"}
           </button>
+
+         <VideoCall roomId={roomId} userName={userName} />
+
+
         </div>
+
+        
       </div>
 
       <div className="flex-1 flex flex-col bg-slate-950">

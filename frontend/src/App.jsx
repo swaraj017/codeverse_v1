@@ -9,7 +9,7 @@ import axios from "axios";
 import { v4 as uuidv4 } from "uuid";
 
 
-//http://localhost:5000
+//http://localhost:3000
 
 const socket = io("https://codeverse-v1.onrender.com");
 
