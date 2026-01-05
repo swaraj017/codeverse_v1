@@ -91,7 +91,7 @@ const EditorContainer = ({
             <div className="bg-gradient-to-r from-amber-500/10 to-orange-500/10 p-4 rounded-xl border border-amber-500/30 text-sm text-amber-300 animate-pulse backdrop-blur-sm">
               <div className="flex items-center gap-2">
                 <div className="w-2 h-2 bg-amber-400 rounded-full animate-bounce"></div>
-                <span className="font-medium">{typingUser} is typing...</span>
+                <span className="font-medium">{typingUser}</span>
               </div>
             </div>
           )}
