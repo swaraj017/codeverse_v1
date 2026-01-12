@@ -4,6 +4,7 @@ import Videocard from "./Videocard";
 import { io } from "socket.io-client";
 
 //http://localhost:3000
+//https://render-hosting-se2b.onrender.com
 const socket = io("https://render-hosting-se2b.onrender.com");
 
 const VideoCall = ({ roomId, userName }) => {
