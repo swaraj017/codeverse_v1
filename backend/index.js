@@ -8,8 +8,8 @@ const app = express();
 const server = http.createServer(app);
 
 //http://localhost:5173
-//https://render-hosting-se2b.onrender.com
-const url = `https://codeverse-v1.onrender.com`;
+//
+const url = `https://render-hosting-se2b.onrender.com`;
 const interval = 30000;
 function reloadWebsite() {
   axios.get(url)
