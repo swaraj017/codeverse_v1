@@ -3,7 +3,8 @@ import PeerService from "../../webrtc/peer";
 import Videocard from "./Videocard";
 import { io } from "socket.io-client";
 
-const socket = io("https://codeverse-v1.onrender.com");
+//http://localhost:3000
+const socket = io("https://render-hosting-se2b.onrender.com");
 
 const VideoCall = ({ roomId, userName }) => {
   const localVideoRef = useRef(null);
@@ -18,10 +19,15 @@ const VideoCall = ({ roomId, userName }) => {
 
   const startMedia = async () => {
     const stream = await PeerService.initLocalStream();
-    localVideoRef.current.srcObject = stream;
+
+    if (localVideoRef.current) {
+      localVideoRef.current.srcObject = stream;
+    }
 
     await PeerService.createPeer((event) => {
-      remoteVideoRef.current.srcObject = event.streams[0];
+      if (remoteVideoRef.current) {
+        remoteVideoRef.current.srcObject = event.streams[0];
+      }
     });
 
     PeerService.onIceCandidate = (candidate) => {
@@ -70,30 +76,49 @@ const VideoCall = ({ roomId, userName }) => {
   }, []);
 
   return (
-    <div className="space-y-4">
-      <Videocard
-        onJoin={handleJoinCall}
-        onLeave={handleLeaveCall}
-        inCall={inCall}
-      />
+  <div className="space-y-4">
+    {/* Join / Leave Buttons */}
+    <Videocard
+      onJoin={handleJoinCall}
+      onLeave={handleLeaveCall}
+      inCall={inCall}
+    />
 
-      <div className="flex gap-4">
+    {/* Vertical Video List */}
+    <div className="h-80 overflow-y-auto rounded-xl border border-slate-800 bg-slate-950 p-3 space-y-4">
+      {/* Local Video */}
+      <div className="relative aspect-video rounded-lg overflow-hidden bg-black border border-slate-700">
         <video
           ref={localVideoRef}
           autoPlay
           muted
           playsInline
-          className="w-64 rounded-lg border"
+          className="w-full h-full object-cover"
         />
-        <video
-          ref={remoteVideoRef}
-          autoPlay
-          playsInline
-          className="w-64 rounded-lg border"
-        />
+        <span className="absolute bottom-1 left-1 text-[10px] bg-black/70 px-1.5 py-0.5 rounded text-white">
+          You
+        </span>
       </div>
+
+      {/* Remote Video */}
+      {inCall && (
+        <div className="relative aspect-video rounded-lg overflow-hidden bg-black border border-slate-700">
+          <video
+            ref={remoteVideoRef}
+            autoPlay
+            playsInline
+            className="w-full h-full object-cover"
+          />
+          <span className="absolute bottom-1 left-1 text-[10px] bg-black/70 px-1.5 py-0.5 rounded text-white">
+            Participant
+          </span>
+        </div>
+      )}
     </div>
-  );
+  </div>
+);
+
 };
 
 export default VideoCall;
+
