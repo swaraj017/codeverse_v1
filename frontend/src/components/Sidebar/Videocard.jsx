@@ -15,14 +15,10 @@ const Videocard = ({ onJoin, onLeave, inCall = false }) => {
   };
 
   return (
-    <div className="bg-slate-800/40 backdrop-blur-xl rounded-xl p-4 shadow-md">
+    <div className="bg-slate-800/40 backdrop-blur-xl rounded-xl border border-slate-700/30 p-4 shadow-lg">
       <div className="flex items-center gap-3 mb-3">
-        <div className="p-2 bg-green-500/20 rounded-lg border border-green-300/30">
-          <Video className="w-5 h-5 text-green-300" />
-        </div>
-        <h3 className="text-sm font-semibold text-slate-200">
-          Video Call
-        </h3>
+         
+         
       </div>
 
       <p className="text-xs text-slate-400 mb-4">
