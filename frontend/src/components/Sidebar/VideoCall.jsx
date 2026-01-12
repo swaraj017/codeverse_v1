@@ -5,7 +5,7 @@ import { io } from "socket.io-client";
 
 //http://localhost:3000
 //https://render-hosting-se2b.onrender.com
-const socket = io("https://render-hosting-se2b.onrender.com");
+const socket = io("https://codeverse-v1.onrender.com");
 
 const VideoCall = ({ roomId, userName }) => {
   const localVideoRef = useRef(null);
